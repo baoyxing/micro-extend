@@ -7,15 +7,22 @@ import (
 	"encoding/base64"
 	"fmt"
 	"github.com/cloudwego/hertz/pkg/app"
+	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/cloudwego/hertz/pkg/protocol"
 	"github.com/pkg/errors"
 	"strings"
 )
 
-func Auth(sk string) app.HandlerFunc {
+type AuthFace interface {
+	GetSk(ctx context.Context, ak string) (string, error)
+}
+
+func Auth(authFace AuthFace) app.HandlerFunc {
 	return func(context context.Context, ctx *app.RequestContext) {
 		ok, err, kvs := authRequest(ctx.Request)
 		if err != nil {
+			err = errors.Unwrap(err)
+			hlog.CtxErrorf(context, "authRequest failure,err:%s", err.Error())
 			ctx.AbortWithStatus(400)
 			return
 		}
@@ -26,6 +33,13 @@ func Auth(sk string) app.HandlerFunc {
 		ak := kvs["ak"]
 		t := kvs["t"]
 		url := ctx.Request.URI()
+		sk, err := authFace.GetSk(context, ak)
+		if err != nil {
+			err = errors.Unwrap(err)
+			hlog.CtxErrorf(context, "getSk failure,err:%s", err.Error())
+			ctx.AbortWithStatus(403)
+			return
+		}
 		signed := customerSigned(string(url.Path()), t, ak, sk)
 		if signed != kvs["sign"] {
 			ctx.AbortWithStatus(403)
