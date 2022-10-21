@@ -14,7 +14,7 @@ import (
 )
 
 type AuthFace interface {
-	GetSk(ctx context.Context, ak string) (string, error)
+	GetSk(context context.Context, ctx *app.RequestContext, ak string) (string, error)
 }
 
 func Auth(authFace AuthFace) app.HandlerFunc {
@@ -33,7 +33,7 @@ func Auth(authFace AuthFace) app.HandlerFunc {
 		ak := kvs["ak"]
 		t := kvs["t"]
 		url := ctx.Request.URI()
-		sk, err := authFace.GetSk(context, ak)
+		sk, err := authFace.GetSk(context, ctx, ak)
 		if err != nil {
 			err = errors.Unwrap(err)
 			hlog.CtxErrorf(context, "getSk failure,err:%s", err.Error())
