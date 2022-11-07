@@ -3,63 +3,58 @@ package middleware
 import (
 	"context"
 	"crypto/hmac"
-	"crypto/sha256"
 	"encoding/base64"
 	"fmt"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/cloudwego/hertz/pkg/protocol"
+	"github.com/cloudwego/hertz/pkg/protocol/consts"
 	"github.com/pkg/errors"
+	"hash"
+	"strconv"
 	"strings"
 )
 
 type AuthFace interface {
-	GetSk(context context.Context, ctx *app.RequestContext, ak string) (context.Context, string, error)
+	GetSk(context context.Context, ctx *app.RequestContext,
+		ak string, timestamp int64) (context.Context, string, error)
 }
 
-func Auth(authFace AuthFace) app.HandlerFunc {
+func Auth(authFace AuthFace, hFunc func() hash.Hash) app.HandlerFunc {
 	return func(context context.Context, ctx *app.RequestContext) {
-		ok, err, kvs := authRequest(ctx.Request)
+		ak, sign, t, err := parseAuthorization(ctx.Request)
 		if err != nil {
-			err = errors.Unwrap(err)
 			hlog.CtxErrorf(context, "authRequest failure,err:%s", err.Error())
-			ctx.AbortWithStatus(400)
+			ctx.AbortWithStatus(consts.StatusBadRequest)
 			return
 		}
-		if !ok {
-			ctx.AbortWithStatus(403)
-			return
-		}
-		ak := kvs["ak"]
-		t := kvs["t"]
-		url := ctx.Request.URI()
-		context, sk, err := authFace.GetSk(context, ctx, ak)
+		ctx2, sk, err := authFace.GetSk(context, ctx, ak, t)
 		if err != nil {
-			err = errors.Unwrap(err)
-			hlog.CtxErrorf(context, "getSk failure,err:%s", err.Error())
+			hlog.CtxErrorf(context, "getSk failure,ak:%s,err:%s", ak, err.Error())
 			ctx.AbortWithStatus(403)
 			return
 		}
-		signed := customerSigned(string(url.Path()), t, ak, sk)
-		if signed != kvs["sign"] {
+		signed := GetSigned(ak, sk, string(ctx.Request.Path()), t, hFunc)
+		if signed != sign {
+			hlog.CtxErrorf(context, "sign invalid,client sign:%s,server client:%s", sign, signed)
 			ctx.AbortWithStatus(403)
 			return
 		}
-		ctx.Next(context)
+		ctx.Next(ctx2)
 	}
 }
 
-func authRequest(req protocol.Request) (bool, error, map[string]string) {
-	authHeader := req.Header.Get("Authorization")
-	if authHeader == "" {
-		return false, errors.New("authorization empty"), nil
+func parseAuthorization(request protocol.Request) (string, string, int64, error) {
+	authorization := request.Header.Get("Authorization")
+	if authorization == "" {
+		return "", "", 0, errors.New("authorization not null")
 	}
-	authHeaderBytes, err := base64.StdEncoding.DecodeString(authHeader)
+	authorizationBytes, err := base64.StdEncoding.DecodeString(authorization)
 	if err != nil {
-		return false, err, nil
+		return "", "", 0, errors.Wrap(err, "authorization base64 decode failure")
 	}
 	kvs := make(map[string]string)
-	for _, v := range strings.Split(string(authHeaderBytes), "&") {
+	for _, v := range strings.Split(string(authorizationBytes), "&") {
 		if strings.Contains(v, "=") {
 			kv := strings.Split(v, "=")
 			if len(kv) == 2 {
@@ -67,24 +62,35 @@ func authRequest(req protocol.Request) (bool, error, map[string]string) {
 			}
 		}
 	}
-	if _, ok := kvs["ak"]; !ok || kvs["ak"] == "" {
-		return false, errors.New("ak empty"), nil
+	ak := ""
+	sign := ""
+	t := int64(0)
+	if tempAk, ok := kvs["ak"]; !ok || kvs["ak"] == "" {
+		return "", "", 0, errors.New("ak not null")
+	} else {
+		ak = tempAk
 	}
 
-	if _, ok := kvs["sign"]; !ok || kvs["sign"] == "" {
-		return false, errors.New("sign empty"), nil
+	if tempSign, ok := kvs["sign"]; !ok || kvs["sign"] == "" {
+
+		return "", "", 0, errors.New("sign not null")
+	} else {
+		sign = tempSign
 	}
 
-	if _, ok := kvs["t"]; !ok || kvs["t"] == "" {
-		return false, errors.New("t empty"), nil
+	if timeStr, ok := kvs["t"]; !ok || kvs["t"] == "" {
+		return "", "", 0, errors.New("timestamp not null")
+	} else {
+		t, _ = strconv.ParseInt(timeStr, 10, 64)
 	}
-	return true, nil, kvs
+	return ak, sign, t, nil
 }
 
-func customerSigned(path string, t string, ak string, sk string) string {
-	msg := fmt.Sprintf("%s%s/%s", ak, path, t)
-	h := hmac.New(sha256.New, []byte(sk))
+func GetSigned(ak, sk, path string, t int64, hFunc func() hash.Hash) string {
+	msg := fmt.Sprintf("%s%s/%ds/%s", ak, path, t, ak)
+	h := hmac.New(hFunc, []byte(sk))
 	h.Write([]byte(msg))
 	sign := h.Sum(nil)
 	return fmt.Sprintf("%x", sign)
+
 }
