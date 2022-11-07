@@ -1,9 +1,11 @@
 package app
 
 import (
+	"encoding/hex"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/common/utils"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
+	"strconv"
 )
 
 type Response struct {
@@ -59,4 +61,11 @@ func FailWithMessage(message string, ctx *app.RequestContext) {
 
 func ReLoginWithMessage(message string, ctx *app.RequestContext) {
 	Result(RELOGIN, nil, message, ctx)
+}
+
+func OkWithBody(data []byte, ctx *app.RequestContext, bodyLength int) {
+	dst := make([]byte, hex.EncodedLen(len(data)))
+	hex.Encode(dst, data)
+	ctx.Header("X-Body-Length", strconv.Itoa(bodyLength))
+	ctx.Data(consts.StatusOK, "application/json; charset=UTF-8", dst)
 }
