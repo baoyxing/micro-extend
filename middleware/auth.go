@@ -87,7 +87,7 @@ func parseAuthorization(request protocol.Request) (string, string, int64, error)
 }
 
 func GetSigned(ak, sk, path string, t int64, hFunc func() hash.Hash) string {
-	msg := fmt.Sprintf("%s%s/%ds/%s", ak, path, t, ak)
+	msg := fmt.Sprintf("%s%s/%d/%s", ak, path, t, ak)
 	h := hmac.New(hFunc, []byte(sk))
 	h.Write([]byte(msg))
 	sign := h.Sum(nil)
