@@ -1,4 +1,4 @@
-package tools
+package teautils
 
 import (
 	"context"
@@ -40,11 +40,12 @@ func EncodeHttpBody(c context.Context, ctx *app.RequestContext, data interface{}
 		ctx.AbortWithMsg("非法Body", 403)
 		return
 	}
+	length := len(src)
 	dataByte, _, err := EncodeTeaStr(src, teaKey)
 	if err != nil {
 		hlog.CtxErrorf(c, "Encode tea failure,err:%s", err.Error())
 		ctx.AbortWithMsg("非法Body", 403)
 		return
 	}
-	rsp.OkWithBody(dataByte, ctx, len(src))
+	rsp.OkWithBody(dataByte, ctx, length)
 }
