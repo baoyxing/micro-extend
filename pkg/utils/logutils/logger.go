@@ -20,8 +20,8 @@ func NewLogger(opts ...Option) *lumberjack.Logger {
 	}
 }
 
-func NewZapEncoderConfig() *zapcore.EncoderConfig {
-	return &zapcore.EncoderConfig{
+func NewZapEncoderConfig() zapcore.Encoder {
+	return zapcore.NewJSONEncoder(zapcore.EncoderConfig{
 		TimeKey:        "time",
 		LevelKey:       "level",
 		NameKey:        "logger",
@@ -34,5 +34,6 @@ func NewZapEncoderConfig() *zapcore.EncoderConfig {
 		EncodeDuration: zapcore.SecondsDurationEncoder, //
 		EncodeCaller:   zapcore.FullCallerEncoder,      // 全路径编码器
 		EncodeName:     zapcore.FullNameEncoder,
-	}
+	})
+
 }
