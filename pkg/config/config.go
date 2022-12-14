@@ -1,4 +1,4 @@
-package rpc
+package config
 
 import "github.com/baoyxing/hertz-contrib/pkg/utils/logutils"
 
