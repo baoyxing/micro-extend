@@ -5,6 +5,7 @@ import "github.com/baoyxing/hertz-contrib/pkg/utils/logutils"
 type HTTPServerOptions struct {
 	Addr        string `mapstructure:"addr"`
 	TdleTimeout int64  `mapstructure:"idle_timeout"`
+	Name        string `mapstructure:"name"`
 }
 
 type RPCClientOptions struct {
