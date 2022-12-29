@@ -18,13 +18,19 @@ const (
 	ErrorTypeJsonMarshal
 	// UnMarshal json 解析错误
 	ErrorTypeJsonUnMarshal
+	// 数据为空
+	ErrorTypeDataEmpty
+	// 数据插入四百
+	ErrorTypeDataInsertFailure
+	//RPC 网络层错误
+	ErrTypeRpcError
 )
 
 func NewBizStatusError(code ErrorType, err error) kerrors.BizStatusErrorIface {
 	return kerrors.NewBizStatusError(int32(code), err.Error())
 }
 
-func ParseBizStatusError(err error) (publicErrMsg string, privateErrMsg string) {
+func ParseBizStatusError(err error) (errType ErrorType, publicErrMsg string, privateErrMsg string) {
 	publicErrMsg = "内部错误"
 	if bizErr, ok := kerrors.FromBizStatusError(err); ok {
 		code := ErrorType(bizErr.BizStatusCode())
@@ -40,12 +46,17 @@ func ParseBizStatusError(err error) (publicErrMsg string, privateErrMsg string) 
 				privateErrMsg += "JsonMarshal Error,reason:"
 			case ErrorTypeJsonUnMarshal:
 				privateErrMsg += "JsonUnMarshal Error,reason:"
+			case ErrorTypeDataEmpty:
+				privateErrMsg += "date empty,reason:"
+			case ErrorTypeDataInsertFailure:
+				privateErrMsg += "date insert failure,reason:"
 			}
 		}
+		errType = code
 		privateErrMsg += bizErr.BizMessage()
 	} else {
+		errType = ErrTypeRpcError
 		privateErrMsg += err.Error()
 	}
-
 	return
 }
