@@ -22,10 +22,10 @@ func NewLogger(opts ...Option) *lumberjack.Logger {
 
 func NewZapEncoderConfig() zapcore.Encoder {
 	return zapcore.NewJSONEncoder(zapcore.EncoderConfig{
-		TimeKey:        "time",
+		TimeKey:        "ts",
 		LevelKey:       "level",
 		NameKey:        "logger",
-		CallerKey:      "linenum",
+		CallerKey:      "caller",
 		MessageKey:     "msg",
 		StacktraceKey:  "stacktrace",
 		LineEnding:     zapcore.DefaultLineEnding,
