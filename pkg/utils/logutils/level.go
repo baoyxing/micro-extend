@@ -16,6 +16,7 @@
 package logutils
 
 import (
+	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"strings"
 
 	"github.com/cloudwego/kitex/pkg/klog"
@@ -53,5 +54,27 @@ func (level Level) KitexLogLevel() klog.Level {
 		return klog.LevelFatal
 	default:
 		return klog.LevelTrace
+	}
+}
+
+func (level Level) HertzLogLevel() hlog.Level {
+	l := Level(strings.ToLower(string(level)))
+	switch l {
+	case LevelTrace:
+		return hlog.LevelTrace
+	case LevelDebug:
+		return hlog.LevelDebug
+	case LevelInfo:
+		return hlog.LevelInfo
+	case LevelNotice:
+		return hlog.LevelNotice
+	case LevelWarn:
+		return hlog.LevelWarn
+	case LevelError:
+		return hlog.LevelError
+	case LevelFatal:
+		return hlog.LevelFatal
+	default:
+		return hlog.LevelTrace
 	}
 }

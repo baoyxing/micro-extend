@@ -36,25 +36,36 @@ func DefaulutLumberjackConfig() *LumberjackConfig {
 
 func WithLumberjackFilename(filename string) Option {
 	return option(func(cfg *LumberjackConfig) {
-		cfg.filename = filename
+		if filename != "" {
+			cfg.filename = filename
+		}
+
 	})
 }
 
 func WithLumberjackMaxSize(maxSize int) Option {
 	return option(func(cfg *LumberjackConfig) {
-		cfg.maxSize = maxSize
+		if maxSize > 0 {
+			cfg.maxSize = maxSize
+		}
+
 	})
 }
 
 func WithLumberjackMaxAge(maxAge int) Option {
 	return option(func(cfg *LumberjackConfig) {
-		cfg.maxAge = maxAge
+		if maxAge > 0 {
+			cfg.maxAge = maxAge
+		}
 	})
 }
 
 func WithLumberjackMaxBackups(maxBackups int) Option {
 	return option(func(cfg *LumberjackConfig) {
-		cfg.maxBackups = maxBackups
+		if maxBackups > 0 {
+			cfg.maxBackups = maxBackups
+		}
+
 	})
 }
 

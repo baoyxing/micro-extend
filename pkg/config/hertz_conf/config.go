@@ -9,6 +9,7 @@ type Logger struct {
 	MaxAge     int    `yaml:"max_age"`     //日志文件存储最大天数
 	Compress   bool   `yaml:"compress"`    //是否执行压缩
 	LocalTime  bool   `yaml:"local_time"`  //是否使用格式化时间辍
+	Level      string `yaml:"level"`
 }
 
 // Server 服务端配置
