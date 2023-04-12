@@ -2,7 +2,7 @@ package teautils
 
 import (
 	"context"
-	rsp "github.com/baoyxing/hertz-contrib/pkg/app"
+	rsp "github.com/baoyxing/micro-extend/pkg/app"
 	"github.com/bytedance/sonic"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
