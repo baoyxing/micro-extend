@@ -15,7 +15,7 @@ type KafkaProducer struct {
 	sync.RWMutex
 }
 
-func createTlsConfig(opt *saramaConf.KafkaOption) (*tls.Config, error) {
+func createTlsConfig(opt saramaConf.KafkaOption) (*tls.Config, error) {
 	t := &tls.Config{InsecureSkipVerify: true}
 	if opt.TLSOption.Enable {
 		cert, err := tls.LoadX509KeyPair(opt.TLSOption.CertPath, opt.TLSOption.KeyPath)
@@ -36,7 +36,7 @@ func createTlsConfig(opt *saramaConf.KafkaOption) (*tls.Config, error) {
 	}
 	return t, nil
 }
-func NewKafkaProducer(opt *saramaConf.KafkaOption) (*KafkaProducer, error) {
+func NewKafkaProducer(opt saramaConf.KafkaOption) (*KafkaProducer, error) {
 	tlsConfig, err := createTlsConfig(opt)
 	if err != nil {
 		return nil, err
