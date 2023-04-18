@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-type kafkaProducer struct {
+type KafkaProducer struct {
 	shSarama.SyncProducer
 	sync.RWMutex
 }
@@ -36,7 +36,7 @@ func createTlsConfig(opt *saramaConf.KafkaOption) (*tls.Config, error) {
 	}
 	return t, nil
 }
-func NewKafkaProducer(opt *saramaConf.KafkaOption) (*kafkaProducer, error) {
+func NewKafkaProducer(opt *saramaConf.KafkaOption) (*KafkaProducer, error) {
 	tlsConfig, err := createTlsConfig(opt)
 	if err != nil {
 		return nil, err
@@ -59,19 +59,19 @@ func NewKafkaProducer(opt *saramaConf.KafkaOption) (*kafkaProducer, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &kafkaProducer{
+	return &KafkaProducer{
 		SyncProducer: producer,
 		RWMutex:      sync.RWMutex{},
 	}, nil
 }
 
-func (p *kafkaProducer) Close() error {
+func (p *KafkaProducer) Close() error {
 	p.RWMutex.Lock()
 	defer p.RWMutex.RLock()
 	return p.SyncProducer.Close()
 }
 
-func (p *kafkaProducer) Send(topic, content string) error {
+func (p *KafkaProducer) Send(topic, content string) error {
 	p.RWMutex.RLock()
 	p.RWMutex.RUnlock()
 	_, _, err := p.SendMessage(&shSarama.ProducerMessage{
@@ -81,7 +81,7 @@ func (p *kafkaProducer) Send(topic, content string) error {
 	return err
 }
 
-func (p *kafkaProducer) SendN(topic string, contents []string) error {
+func (p *KafkaProducer) SendN(topic string, contents []string) error {
 	p.RWMutex.RLock()
 	p.RWMutex.RUnlock()
 	var msgs []*shSarama.ProducerMessage
