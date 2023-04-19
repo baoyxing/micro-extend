@@ -64,6 +64,7 @@ type auth struct {
 	Enable bool   `yaml:"enable"` //是否启用auth配置
 	AK     string `yaml:"ak"`
 	SK     string `yaml:"sk"`
+	TeaKey string `yaml:"tea_key"`
 }
 
 // cors配置
