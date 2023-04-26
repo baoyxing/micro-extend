@@ -3,9 +3,11 @@ module github.com/baoyxing/micro-extend
 go 1.18
 
 require (
+	github.com/Shopify/sarama v1.38.1
 	github.com/bytedance/sonic v1.8.1
 	github.com/cloudwego/hertz v0.6.0
 	github.com/cloudwego/kitex v0.4.4
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/hertz-contrib/gzip v0.0.1
 	github.com/hertz-contrib/obs-opentelemetry/provider v0.2.0
 	github.com/hertz-contrib/obs-opentelemetry/tracing v0.2.0
@@ -17,10 +19,10 @@ require (
 	github.com/polarismesh/polaris-go v1.3.0
 	go.uber.org/zap v1.21.0
 	golang.org/x/crypto v0.1.0
+	golang.org/x/sync v0.1.0
 )
 
 require (
-	github.com/Shopify/sarama v1.38.1 // indirect
 	github.com/andeya/goutil v1.0.0 // indirect
 	github.com/apache/thrift v0.13.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
@@ -73,6 +75,7 @@ require (
 	github.com/prometheus/common v0.32.1 // indirect
 	github.com/prometheus/procfs v0.7.3 // indirect
 	github.com/rcrowley/go-metrics v0.0.0-20201227073835-cf1acfcdf475 // indirect
+	github.com/rogpeppe/go-internal v1.10.0 // indirect
 	github.com/spaolacci/murmur3 v1.1.0 // indirect
 	github.com/tidwall/gjson v1.14.4 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
@@ -96,7 +99,6 @@ require (
 	go.uber.org/multierr v1.9.0 // indirect
 	golang.org/x/arch v0.2.0 // indirect
 	golang.org/x/net v0.7.0 // indirect
-	golang.org/x/sync v0.1.0 // indirect
 	golang.org/x/sys v0.5.0 // indirect
 	golang.org/x/text v0.7.0 // indirect
 	google.golang.org/genproto v0.0.0-20230216225411-c8e22ba71e44 // indirect
