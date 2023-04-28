@@ -3,6 +3,7 @@ package config
 type RedisOption struct {
 	Network  string `yaml:"network"`  //网络类型，tcp or unix，默认tcp
 	Addr     string `yaml:"addr"`     //主机名+冒号+端口，默认localhost:6379
+	Username string `yaml:"username"` // 用户名
 	Password string `yaml:"password"` //密码
 	DB       int64  `yaml:"db"`       // redis数据库index
 
