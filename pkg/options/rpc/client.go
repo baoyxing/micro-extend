@@ -10,6 +10,7 @@ import (
 	"github.com/cloudwego/kitex/pkg/retry"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/pkg/stats"
+	"github.com/cloudwego/kitex/pkg/transmeta"
 	"github.com/kitex-contrib/obs-opentelemetry/provider"
 	"github.com/kitex-contrib/obs-opentelemetry/tracing"
 	"github.com/kitex-contrib/polaris"
@@ -140,6 +141,8 @@ func ClientOptions(confClient hertz_conf.Client, confServer hertz_conf.Server,
 		options = append(options, client.WithStatsLevel(stats.LevelDisabled))
 		log.CtxInfof(ctx, "客户端配置禁用埋点 已禁用 LevelDisabled：%v", stats.LevelDisabled)
 	}
+
+	options = append(options, client.WithMetaHandler(transmeta.ClientTTHeaderHandler))
 
 	return options, nil
 }

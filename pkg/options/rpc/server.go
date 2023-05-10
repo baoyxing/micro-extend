@@ -8,6 +8,7 @@ import (
 	"github.com/cloudwego/kitex/pkg/registry"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/pkg/stats"
+	"github.com/cloudwego/kitex/pkg/transmeta"
 	"github.com/cloudwego/kitex/server"
 	"github.com/kitex-contrib/obs-opentelemetry/provider"
 	"github.com/kitex-contrib/obs-opentelemetry/tracing"
@@ -19,7 +20,6 @@ import (
 func ServerOptions(confServer kitex_conf.Server,
 	confService kitex_conf.Service, log klog.CtxLogger) ([]server.Option, error) {
 	var options []server.Option
-
 	ctx := context.Background()
 	if confServer.Rpc.Enable {
 		addr, err := net.ResolveTCPAddr(confServer.Rpc.Network, confServer.Rpc.Address)
@@ -87,5 +87,6 @@ func ServerOptions(confServer kitex_conf.Server,
 		options = append(options, server.WithStatsLevel(stats.LevelDisabled))
 		log.CtxInfof(ctx, "客户端配置禁用埋点 已禁用 LevelDisabled：%v", stats.LevelDisabled)
 	}
+	options = append(options, server.WithMetaHandler(transmeta.ServerTTHeaderHandler))
 	return options, nil
 }
