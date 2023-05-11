@@ -7,6 +7,7 @@ import (
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/pkg/errors"
+	oteltrace "go.opentelemetry.io/otel/trace"
 	"strconv"
 )
 
@@ -47,5 +48,7 @@ func EncodeHttpBody(c context.Context, ctx *app.RequestContext, data interface{}
 		ctx.AbortWithMsg("非法Body", 403)
 		return
 	}
+	traceID := oteltrace.SpanContextFromContext(c).TraceID().String()
+	ctx.Header("X-UUID", traceID)
 	rsp.OkWithBody(dataByte, ctx, length)
 }
