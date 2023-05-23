@@ -8,7 +8,6 @@ import (
 
 func GzipOptions(server hertz_conf.Server) []hgzip.Option {
 	var options []hgzip.Option
-
 	if server.Gzip.Excluded.Enable {
 
 		if server.Gzip.Excluded.ExcludedExtensions.Enable {

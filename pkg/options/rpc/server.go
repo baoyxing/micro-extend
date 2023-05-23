@@ -38,31 +38,31 @@ func ServerOptions(confServer kitex_conf.Server,
 			return nil, err
 		}
 		info := &registry.Info{
-			ServiceName: confService.ServerName,
+			ServiceName: confService.Name,
 			Tags: map[string]string{
-				polaris.NameSpaceTagKey: confService.NameSpace,
+				polaris.NameSpaceTagKey: confService.Space,
 			},
 		}
 		options = append(options, server.WithRegistry(r))
 		options = append(options, server.WithRegistryInfo(info))
-		log.CtxInfof(ctx, "服务端配置北极星注册中心已配置成功 name：%v，nameSpace:%v", confService.ServerName, confService.NameSpace)
+		log.CtxInfof(ctx, "服务端配置北极星注册中心已配置成功 name：%v，nameSpace:%v", confService.Name, confService.Space)
 	}
 
 	//是否启用jaeger链路追踪
 	if confServer.Jaeger.Enable {
 		provider.NewOpenTelemetryProvider(
-			provider.WithServiceName(confService.ServerName),
+			provider.WithServiceName(confService.Name),
 			provider.WithExportEndpoint(confServer.Jaeger.Endpoint),
 			provider.WithInsecure(),
 		)
 		options = append(options, server.WithSuite(tracing.NewServerSuite()))
-		options = append(options, server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{ServiceName: confService.ServerName}))
-		log.CtxInfof(ctx, "服务端配置链路已配置成功 ServiceName：%s，Endpoint:%s", confService.ServerName, confServer.Jaeger.Endpoint)
+		options = append(options, server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{ServiceName: confService.Space}))
+		log.CtxInfof(ctx, "服务端配置链路已配置成功 ServiceName：%s，Endpoint:%s", confService.Space, confServer.Jaeger.Endpoint)
 	}
 	//是否启用多路复用
 	if confServer.Transport.Enable {
 		options = append(options, server.WithMuxTransport())
-		log.CtxInfof(ctx, "服务端配置多路复用已配置成功 ServiceName：%v", confService.ServerName)
+		log.CtxInfof(ctx, "服务端配置多路复用已配置成功 ServiceName：%v", confService.Name)
 	}
 	//是否启用限流器
 	if confServer.Limit.Enable {
@@ -71,7 +71,7 @@ func ServerOptions(confServer kitex_conf.Server,
 			MaxQPS:         confServer.Limit.MaxQPS,
 		}))
 		log.CtxInfof(ctx, "服务端配置限流器已配置成功 ServiceName：%v 最大连接数:%d 最大qps:%d",
-			confService.ServerName, confServer.Limit.MaxConnections, confServer.Limit.MaxQPS)
+			confService.Name, confServer.Limit.MaxConnections, confServer.Limit.MaxQPS)
 	}
 
 	//埋点策略&埋点粒度

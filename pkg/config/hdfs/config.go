@@ -1,6 +1,6 @@
 package hdfs
 
 type ClientOption struct {
-	Addresses []string `yaml:"addresses"`
-	User      string   `yaml:"user"`
+	Addresses []string `json:"addresses" mapstructure:"addresses" yaml:"addresses"`
+	User      string   `json:"user" mapstructure:"user" yaml:"user"`
 }

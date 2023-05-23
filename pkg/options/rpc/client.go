@@ -2,7 +2,7 @@ package rpc
 
 import (
 	"context"
-	"github.com/baoyxing/micro-extend/pkg/config/hertz_conf"
+	clientConf "github.com/baoyxing/micro-extend/pkg/config/client"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/pkg/connpool"
@@ -20,11 +20,11 @@ import (
 type ctxKey int
 
 const (
-	ctxConsistenKey ctxKey = iota
+	ctxConsistedKey ctxKey = iota
 )
 
-func ClientOptions(confClient hertz_conf.Client, confServer hertz_conf.Server,
-	confService hertz_conf.Service, suite *polaris.ClientSuite,
+func ClientOptions(confClient clientConf.Client, polaris clientConf.Polaris, jaeger clientConf.Jaeger,
+	clientName string, suite *polaris.ClientSuite,
 	log hlog.CtxLogger) ([]client.Option, error) {
 	ctx := context.Background()
 	var options []client.Option
@@ -57,23 +57,23 @@ func ClientOptions(confClient hertz_conf.Client, confServer hertz_conf.Server,
 	}
 
 	//客户端配置jaeger
-	if confServer.Jaeger.Enable {
+	if jaeger.Enable {
 		provider.NewOpenTelemetryProvider(
-			provider.WithServiceName(confService.ClientName),
-			provider.WithExportEndpoint(confServer.Jaeger.Endpoint),
+			provider.WithServiceName(clientName),
+			provider.WithExportEndpoint(jaeger.Endpoint),
 			provider.WithEnableTracing(true),
 			provider.WithInsecure(),
 		)
 		//defer p.Shutdown(ctx)
 		options = append(options, client.WithSuite(tracing.NewClientSuite()))
-		options = append(options, client.WithClientBasicInfo(&rpcinfo.EndpointBasicInfo{ServiceName: confService.ClientName}))
-		log.CtxInfof(ctx, "客户端配置链路已配置成功 ClientName：%v，Endpoint:%v", confService.ClientName, confServer.Jaeger.Endpoint)
+		options = append(options, client.WithClientBasicInfo(&rpcinfo.EndpointBasicInfo{ServiceName: clientName}))
+		log.CtxInfof(ctx, "客户端配置链路已配置成功 ClientName：%v，Endpoint:%v", clientName, jaeger.Endpoint)
 	}
 
 	// 客户端连接服务中心
-	if confServer.Polaris.Enable {
+	if polaris.Enable {
 		options = append(options, client.WithSuite(suite))
-		log.CtxInfof(ctx, "客户端配置连接配置中心已配置成功 ClientName：%v，Endpoint:%v", confService.ClientName, confServer.Jaeger.Endpoint)
+		log.CtxInfof(ctx, "客户端配置连接配置中心已配置成功 ClientName：%v，Endpoint:%v", clientName, jaeger.Endpoint)
 	}
 
 	//客户端连接类型---短链接  3选1(短连接、长链接、多路复用)
@@ -118,7 +118,7 @@ func ClientOptions(confClient hertz_conf.Client, confServer hertz_conf.Server,
 	if confClient.LoadBalancer.Enable {
 		options = append(options, client.WithLoadBalancer(loadbalance.NewConsistBalancer(
 			loadbalance.NewConsistentHashOption(func(ctx context.Context, request interface{}) string {
-				return ctx.Value(ctxConsistenKey).(string)
+				return ctx.Value(ctxConsistedKey).(string)
 			}))))
 		log.CtxInfof(ctx, "客户端配置负载均衡 已启用 ：%v", confClient.LoadBalancer.Enable)
 	}

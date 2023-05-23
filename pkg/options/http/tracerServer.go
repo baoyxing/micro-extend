@@ -12,13 +12,13 @@ import (
 func NewServerTracer(server hertz_conf.Server, service hertz_conf.Service,
 	log hlog.CtxLogger) (serverconfig.Option, *hertztracing.Config) {
 	provider.NewOpenTelemetryProvider(
-		provider.WithServiceName(service.ClientName),
+		provider.WithServiceName(service.Name),
 		provider.WithExportEndpoint(server.Jaeger.Endpoint),
 		provider.WithEnableTracing(true),
 		provider.WithInsecure(),
 	)
 	log.CtxInfof(context.Background(),
 		"服务端配置链路已配置成功 ServiceName：%v，Endpoint:%v",
-		service.ClientName, server.Jaeger.Endpoint)
+		service.Name, server.Jaeger.Endpoint)
 	return hertztracing.NewServerTracer()
 }

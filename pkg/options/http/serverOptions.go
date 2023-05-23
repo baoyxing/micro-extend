@@ -40,15 +40,15 @@ func ServerOptions(hServer hertz_conf.Server,
 			return nil
 		}
 		info := &registry.Info{
-			ServiceName: service.ServerName,
+			ServiceName: service.Name,
 			Addr:        utils.NewNetAddr(hServer.Polaris.Network, hServer.Polaris.Address),
 			Tags: map[string]string{
-				"namespace": service.NameSpace,
+				"namespace": service.Space,
 			},
 		}
 		options = append(options, server.WithRegistry(r, info))
 		log.CtxInfof(ctx, "服务端配置北极星注册中心已配置成功 Network: %s,Address:%s,name：%v，nameSpace:%v",
-			hServer.Polaris.Network, hServer.Polaris.Address, service.ServerName, service.NameSpace)
+			hServer.Polaris.Network, hServer.Polaris.Address, service.Name, service.Space)
 	}
 
 	return options
