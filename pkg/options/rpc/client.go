@@ -73,7 +73,7 @@ func ClientOptions(confClient clientConf.Client, polaris clientConf.Polaris, jae
 	// 客户端连接服务中心
 	if polaris.Enable {
 		options = append(options, client.WithSuite(suite))
-		log.CtxInfof(ctx, "客户端配置连接配置中心已配置成功 ClientName：%v，Endpoint:%v", clientName, jaeger.Endpoint)
+		log.CtxInfof(ctx, "客户端配置连接配置中心已配置成功 ClientName：%v，Endpoint:%v", clientName, polaris.Address)
 	}
 
 	//客户端连接类型---短链接  3选1(短连接、长链接、多路复用)

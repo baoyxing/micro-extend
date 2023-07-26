@@ -1,17 +1,20 @@
 package app
 
 import (
+	"context"
 	"encoding/hex"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/common/utils"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
+	oteltrace "go.opentelemetry.io/otel/trace"
 	"strconv"
 )
 
 type Response struct {
-	Code int         `json:"code"`
-	Msg  string      `json:"msg"`
-	Data interface{} `json:"data"`
+	Code    int         `json:"code"`
+	Msg     string      `json:"msg"`
+	Data    interface{} `json:"data"`
+	TraceID string      `json:"trace_id"`
 }
 
 const (
@@ -20,47 +23,60 @@ const (
 	SUCCESS = 0
 )
 
-func Result(code int, data interface{}, msg string, ctx *app.RequestContext) {
+func Result(c context.Context,
+	ctx *app.RequestContext,
+	code int,
+	data interface{}, msg string) {
+	traceID := oteltrace.SpanContextFromContext(c).TraceID().String()
 	if data == nil {
 		ctx.JSON(consts.StatusOK, utils.H{
-			"code": code,
-			"msg":  msg,
+			"code":     code,
+			"msg":      msg,
+			"trace_id": traceID,
 		})
 	} else {
 		ctx.JSON(consts.StatusOK, Response{
 			code,
 			msg,
 			data,
+			traceID,
 		})
 	}
 	ctx.Abort()
 }
 
-func Ok(ctx *app.RequestContext) {
-	Result(SUCCESS, nil, "操作成功", ctx)
+func Ok(c context.Context,
+	ctx *app.RequestContext) {
+	Result(c, ctx, SUCCESS, nil, "操作成功")
 }
 
-func OkWithMessage(msg string, ctx *app.RequestContext) {
-	Result(SUCCESS, nil, msg, ctx)
+func OkWithMessage(c context.Context,
+	ctx *app.RequestContext, msg string) {
+	Result(c, ctx, SUCCESS, nil, msg)
 }
-func OkWithData(data interface{}, ctx *app.RequestContext) {
-	Result(SUCCESS, data, "操作成功", ctx)
-}
-
-func OkWithDetailed(data interface{}, message string, ctx *app.RequestContext) {
-	Result(SUCCESS, data, message, ctx)
+func OkWithData(c context.Context,
+	ctx *app.RequestContext, data interface{}) {
+	Result(c, ctx, SUCCESS, data, "操作成功")
 }
 
-func Fail(ctx *app.RequestContext) {
-	Result(ERROR, nil, "操作失败", ctx)
+func OkWithDetailed(c context.Context,
+	ctx *app.RequestContext, data interface{}, message string) {
+	Result(c, ctx, SUCCESS, data, message)
 }
 
-func FailWithMessage(message string, ctx *app.RequestContext) {
-	Result(ERROR, nil, message, ctx)
+func Fail(c context.Context,
+	ctx *app.RequestContext) {
+	Result(c, ctx, ERROR, nil, "操作失败")
 }
 
-func ReLoginWithMessage(message string, ctx *app.RequestContext) {
-	Result(RELOGIN, nil, message, ctx)
+func FailWithMessage(c context.Context,
+	ctx *app.RequestContext, message string) {
+	Result(c, ctx, ERROR, nil, message)
+}
+
+func ReLoginWithMessage(c context.Context,
+	ctx *app.RequestContext, message string) {
+	Result(c, ctx, RELOGIN, nil, message)
 }
 
 func OkWithBody(data []byte, ctx *app.RequestContext, bodyLength int) {
