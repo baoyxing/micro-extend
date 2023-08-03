@@ -11,6 +11,7 @@ import (
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/pkg/stats"
 	"github.com/cloudwego/kitex/pkg/transmeta"
+	"github.com/cloudwego/kitex/transport"
 	"github.com/kitex-contrib/obs-opentelemetry/provider"
 	"github.com/kitex-contrib/obs-opentelemetry/tracing"
 	"github.com/kitex-contrib/polaris"
@@ -143,6 +144,7 @@ func ClientOptions(confClient clientConf.Client, polaris clientConf.Polaris, jae
 	}
 
 	options = append(options, client.WithMetaHandler(transmeta.ClientTTHeaderHandler))
+	options = append(options, client.WithTransportProtocol(transport.TTHeader))
 
 	return options, nil
 }
