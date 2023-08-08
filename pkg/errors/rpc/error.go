@@ -8,10 +8,10 @@ const (
 	ErrorTypeInvalid ErrorType = iota
 	// 数据重复错误
 	ErrorTypeDBDataRepeat
-	//数据库操作错误
-	ErrorTypeDBHandle
 	// 数据无效
 	ErrorTypeDataInvalid
+	//数据库操作错误
+	ErrorTypeDBHandle
 	//network 内部网络处理错误
 	ErrorTypeNetwork
 	//JsonMarshal json 转换错误
@@ -34,12 +34,10 @@ func ParseBizStatusError(err error) (errType ErrorType, publicErrMsg string, pri
 	publicErrMsg = "内部错误"
 	if bizErr, ok := kerrors.FromBizStatusError(err); ok {
 		code := ErrorType(bizErr.BizStatusCode())
-		if code > ErrorTypeDBDataRepeat {
+		if code > ErrorTypeDataInvalid {
 			switch code {
 			case ErrorTypeDBHandle:
 				privateErrMsg += "db handle Error,reason:"
-			case ErrorTypeDataInvalid:
-				privateErrMsg += "DataInvalid Error,reason:"
 			case ErrorTypeNetwork:
 				privateErrMsg += "Network Error,reason:"
 			case ErrorTypeJsonMarshal:
@@ -53,6 +51,7 @@ func ParseBizStatusError(err error) (errType ErrorType, publicErrMsg string, pri
 			}
 		}
 		errType = code
+		publicErrMsg += bizErr.BizMessage()
 		privateErrMsg += bizErr.BizMessage()
 	} else {
 		errType = ErrTypeRpcError
