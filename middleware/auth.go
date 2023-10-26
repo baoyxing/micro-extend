@@ -22,7 +22,7 @@ type AuthFace interface {
 
 func Auth(authFace AuthFace, hFunc func() hash.Hash) app.HandlerFunc {
 	return func(context context.Context, ctx *app.RequestContext) {
-		ak, sign, t, err := parseAuthorization(ctx.Request)
+		ak, sign, t, err := parseAuthorization(&ctx.Request)
 		if err != nil {
 			hlog.CtxErrorf(context, "authRequest failure,err:%s", err.Error())
 			ctx.AbortWithStatus(consts.StatusBadRequest)
@@ -44,7 +44,7 @@ func Auth(authFace AuthFace, hFunc func() hash.Hash) app.HandlerFunc {
 	}
 }
 
-func parseAuthorization(request protocol.Request) (string, string, int64, error) {
+func parseAuthorization(request *protocol.Request) (string, string, int64, error) {
 	authorization := request.Header.Get("Authorization")
 	if authorization == "" {
 		return "", "", 0, errors.New("authorization not null")

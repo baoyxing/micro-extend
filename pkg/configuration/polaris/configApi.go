@@ -30,5 +30,5 @@ func ConfigApi(namespace, fileGroup, fileName string) model.ConfigFile {
 }
 
 func changeListener(event model.ConfigFileChangeEvent) {
-	klog.CtxInfof(context.Background(), "recevied change event. %+v", event)
+	klog.CtxInfof(context.Background(), "received change event. %+v", event)
 }

@@ -3,7 +3,7 @@ package sarama
 import (
 	"crypto/tls"
 	"crypto/x509"
-	shSarama "github.com/Shopify/sarama"
+	shSarama "github.com/IBM/sarama"
 	saramaConf "github.com/baoyxing/micro-extend/pkg/config/kafka/sarama"
 	"io/ioutil"
 	"sync"
