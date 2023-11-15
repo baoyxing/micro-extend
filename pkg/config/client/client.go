@@ -92,3 +92,11 @@ type StatsLevel struct {
 	LevelBase     bool `json:"level_base" mapstructure:"level_base" yaml:"level_base"`
 	LevelDetailed bool `json:"level_detailed" mapstructure:"level_detailed" yaml:"level_detailed"`
 }
+
+type RpcClientConf struct {
+	Addr             string
+	MuxConnectionNum int64
+	RpcTimeout       int64
+	ProviderEndpoint string
+	ServiceName      string
+}
