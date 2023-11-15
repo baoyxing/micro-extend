@@ -34,8 +34,8 @@ const (
 	LevelFatal  Level = "fatal"
 )
 
-// KitexLogLevel return kitex log level
-func (level Level) KitexLogLevel() klog.Level {
+// KLogLevel return kitex log level
+func (level Level) KLogLevel() klog.Level {
 	l := Level(strings.ToLower(string(level)))
 	switch l {
 	case LevelTrace:
@@ -57,7 +57,7 @@ func (level Level) KitexLogLevel() klog.Level {
 	}
 }
 
-func (level Level) HertzLogLevel() hlog.Level {
+func (level Level) HLogLevel() hlog.Level {
 	l := Level(strings.ToLower(string(level)))
 	switch l {
 	case LevelTrace:
