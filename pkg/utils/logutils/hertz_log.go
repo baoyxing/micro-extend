@@ -55,7 +55,14 @@ func NewHertzLog(opts ...Option) {
 			Enc: zapcore.NewJSONEncoder(pkgEncoderConfig()),
 			Ws:  NewWriteSyncer("/error/app", config),
 			Lvl: zap.LevelEnablerFunc(func(lev zapcore.Level) bool {
-				return lev >= zap.ErrorLevel
+				return lev == zap.ErrorLevel
+			}),
+		})
+		coreConfigs = append(coreConfigs, hertzzap.CoreConfig{
+			Enc: zapcore.NewJSONEncoder(pkgEncoderConfig()),
+			Ws:  NewWriteSyncer("/panic/app", config),
+			Lvl: zap.LevelEnablerFunc(func(lev zapcore.Level) bool {
+				return lev >= zap.DPanicLevel
 			}),
 		})
 	case 3:
@@ -94,7 +101,14 @@ func NewHertzLog(opts ...Option) {
 			Enc: zapcore.NewJSONEncoder(pkgEncoderConfig()),
 			Ws:  NewWriteSyncer("/error/app", config),
 			Lvl: zap.LevelEnablerFunc(func(lev zapcore.Level) bool {
-				return lev >= zap.ErrorLevel
+				return lev == zap.ErrorLevel
+			}),
+		})
+		coreConfigs = append(coreConfigs, hertzzap.CoreConfig{
+			Enc: zapcore.NewJSONEncoder(pkgEncoderConfig()),
+			Ws:  NewWriteSyncer("/panic/app", config),
+			Lvl: zap.LevelEnablerFunc(func(lev zapcore.Level) bool {
+				return lev >= zap.DPanicLevel
 			}),
 		})
 	}
