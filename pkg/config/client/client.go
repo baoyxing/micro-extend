@@ -1,5 +1,7 @@
 package client
 
+import "time"
+
 // Client **********************************客户端对象******************************
 // 客户端配置
 type Client struct {
@@ -95,8 +97,13 @@ type StatsLevel struct {
 
 type RpcClientConf struct {
 	Addr             string
-	MuxConnectionNum int64
-	RpcTimeout       int64
+	MuxConnectionNum int
+	RpcTimeout       time.Duration
 	ProviderEndpoint string
 	ServiceName      string
+}
+
+type RPCServerOption struct {
+	Name     string `json:"name" mapstructure:"name" yaml:"name"`
+	Intranet string `json:"intranet"  mapstructure:"intranet" yaml:"intranet"`
 }
