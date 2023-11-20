@@ -6,6 +6,7 @@ import (
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/limit"
 	"github.com/cloudwego/kitex/pkg/registry"
+	"github.com/cloudwego/kitex/pkg/remote/codec/thrift"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/pkg/stats"
 	"github.com/cloudwego/kitex/pkg/transmeta"
@@ -88,5 +89,7 @@ func ServerOptions(confServer kitex_conf.Server,
 		log.CtxInfof(ctx, "客户端配置禁用埋点 已禁用 LevelDisabled：%v", stats.LevelDisabled)
 	}
 	options = append(options, server.WithMetaHandler(transmeta.ServerTTHeaderHandler))
+	code := thrift.NewThriftCodec()
+	options = append(options, server.WithPayloadCodec(code))
 	return options, nil
 }

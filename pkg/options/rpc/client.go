@@ -142,9 +142,7 @@ func ClientOptions(confClient clientConf.Client, polaris clientConf.Polaris, jae
 		options = append(options, client.WithStatsLevel(stats.LevelDisabled))
 		log.CtxInfof(ctx, "客户端配置禁用埋点 已禁用 LevelDisabled：%v", stats.LevelDisabled)
 	}
-
 	options = append(options, client.WithMetaHandler(transmeta.ClientTTHeaderHandler))
-	options = append(options, client.WithTransportProtocol(transport.TTHeader))
-
+	options = append(options, client.WithTransportProtocol(transport.TTHeaderFramed))
 	return options, nil
 }
