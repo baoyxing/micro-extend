@@ -99,7 +99,6 @@ type RpcClientConf struct {
 	Addr             string
 	MuxConnectionNum int
 	RpcTimeout       time.Duration
-	ProviderEndpoint string
 	ServiceName      string
 }
 
