@@ -3,6 +3,7 @@ module github.com/baoyxing/micro-extend
 go 1.20
 
 require (
+	entgo.io/ent v0.12.5
 	github.com/IBM/sarama v1.42.1
 	github.com/bytedance/sonic v1.10.2
 	github.com/cloudwego/hertz v0.7.1
