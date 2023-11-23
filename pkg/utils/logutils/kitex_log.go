@@ -1,7 +1,7 @@
 package logutils
 
 import (
-	Kitexzap "github.com/baoyxing/micro-extend/pkg/utils/logutils/hertz"
+	Kitexzap "github.com/baoyxing/micro-extend/pkg/utils/logutils/kitex"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"

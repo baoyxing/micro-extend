@@ -1,4 +1,4 @@
-package hertz
+package kitex
 
 import (
 	"fmt"

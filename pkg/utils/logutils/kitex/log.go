@@ -1,4 +1,4 @@
-package hertz
+package kitex
 
 import (
 	"context"
@@ -33,7 +33,7 @@ type Logger struct {
 }
 
 func NewLogger(opts ...Option) *Logger {
-	config := new(config)
+	config := defaultConfig()
 	// apply options
 	for _, opt := range opts {
 		opt.apply(config)
