@@ -10,6 +10,7 @@ require (
 	github.com/hertz-contrib/gzip v0.0.1
 	github.com/hertz-contrib/logger/zap v1.1.0
 	github.com/hertz-contrib/obs-opentelemetry/provider v0.2.3
+	github.com/hertz-contrib/obs-opentelemetry/tracing v0.3.1
 	github.com/hertz-contrib/registry/polaris v0.0.0-20231110170354-519baf74ea6b
 	github.com/kitex-contrib/obs-opentelemetry v0.2.5
 	github.com/kitex-contrib/polaris v0.0.0-20220811095956-d405002eaeaf

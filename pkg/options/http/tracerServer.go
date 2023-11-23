@@ -6,7 +6,7 @@ import (
 	serverconfig "github.com/cloudwego/hertz/pkg/common/config"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/hertz-contrib/obs-opentelemetry/provider"
-	hertztracing "github.com/kitex-contrib/obs-opentelemetry/tracing"
+	hertztracing "github.com/hertz-contrib/obs-opentelemetry/tracing"
 )
 
 func NewServerTracer(server hertz_conf.Server, service hertz_conf.Service,

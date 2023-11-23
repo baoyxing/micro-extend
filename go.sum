@@ -497,6 +497,8 @@ github.com/hertz-contrib/logger/zap v1.1.0 h1:4efINiIDJrXEtAFeEdDJvc3Hye0VFxp+0X
 github.com/hertz-contrib/logger/zap v1.1.0/go.mod h1:D/rJJgsYn+SGaHVfVqWS3vHTbbc7ODAlJO+6smWgTeE=
 github.com/hertz-contrib/obs-opentelemetry/provider v0.2.3 h1:SO/KKRPhh2lbheQf89PqIrDdeDqH6a74i3XG0SXXxvQ=
 github.com/hertz-contrib/obs-opentelemetry/provider v0.2.3/go.mod h1:neuPg2FGeUZ5z1dxzkrvcPTtmOBcHhsXVGlprpGOwts=
+github.com/hertz-contrib/obs-opentelemetry/tracing v0.3.1 h1:N/rbPCZgrupBNjTEe8Cq+cnTOpgj/y4SU6MYe6uQl0g=
+github.com/hertz-contrib/obs-opentelemetry/tracing v0.3.1/go.mod h1:oEnsG4CpBuLx1vcCnxpE/MsNHUrF4qQKw8DiOdtdBa0=
 github.com/hertz-contrib/registry/polaris v0.0.0-20231110170354-519baf74ea6b h1:/BCj/wA/BKW9mGJlxvs/dyih0N7Be4hzctV48kz9X4A=
 github.com/hertz-contrib/registry/polaris v0.0.0-20231110170354-519baf74ea6b/go.mod h1:CKX2hr4LfrFZgWL7rTTOb13AOrEUAfUMkte+SJLWVl4=
 github.com/iancoleman/strcase v0.2.0 h1:05I4QRnGpI0m37iZQRuskXh+w77mr6Z41lwQzuHLwW0=
